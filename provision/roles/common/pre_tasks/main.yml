@@ -1,0 +1,55 @@
+---
+- name: Install apt-transport-https
+  become: yes
+  apt:
+    pkg: apt-transport-https
+    state: latest
+
+- name: remove default sources
+  become: yes
+  file:
+    path: /etc/apt/sources.list
+    state: absent
+
+- name: configure security sources
+  become: yes
+  template:
+    src: roles/common/templates/security.list.j2
+    dest: /etc/apt/sources.list.d/security.list
+    owner: root
+    group: root
+
+- name: configure security preferences
+  become: yes
+  template:
+    src: roles/common/templates/security.pref.j2
+    dest: /etc/apt/sources.list.d/security.pref
+    owner: root
+    group: root
+
+- name: configure debian sources
+  become: yes
+  with_item: "{{ common_debian_repos }}"
+  template:
+    src: roles/common/templates/debian.list.j2
+    dest: /etc/apt/sources.list.d/{{ item.name }}.list
+    owner: root
+    group: root
+
+- name: configure debian preferences
+  become: yes
+  with_item: "{{ common_debian_repos }}"
+  template:
+    src: roles/common/templates/debian.pref.j2
+    dest: /etc/apt/sources.list.d/{{ item.name }}.pref
+    owner: root
+    group: root
+
+- name: configure extra sources
+  become: yes
+  template:
+    src: roles/common/templates/extra.list.j2
+    dest: /etc/apt/sources.list.d/extra.list
+    owner: root
+    group: root
+

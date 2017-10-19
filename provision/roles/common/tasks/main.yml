@@ -1,0 +1,35 @@
+---
+- name: Install common packages
+  become: yes
+  with_item: "{{ common_packages }}"
+  apt:
+    pkg: "{{ item.name }}
+    state: latest
+
+- name: Install common backports packages
+  become: yes
+  with_item: "{{ common_backports_packages }}"
+  apt:
+    pkg: "{{ item.name }}"
+    default_release: "jessie-backports"
+    state: latest
+
+- name: set timezone
+  become: yes
+  template:
+    src: timezone.j2
+    dest:/etc/timezone
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - update timezone
+
+- name: keep HOME while sudoing
+  become: yes
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: ^Defaults.*env_keep
+    line: Defaults      env_keep="HOME"
+    insertafter: ^Defaults.*secure_path=
+    state: present
