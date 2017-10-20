@@ -6,6 +6,7 @@ common_packages:
   - name: vim
   - name: git
   - name: iptables
+  - name: tmux
 
 common_backports_packages:
   - name: fish

@@ -1,0 +1,11 @@
+---
+- name: Installation repos
+  hosts: all
+  pre_tasks:
+      - include: roles/common/pre_tasks/main.yml
+      - include: roles/dovecot/pre_tasks/main.yml
+      - include: roles/postfix/pre_tasks/main.yml
+  roles:
+      - common
+      - dovecot
+      - postfix
